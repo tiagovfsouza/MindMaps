@@ -1,0 +1,1869 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Microsoft Agent 365 Interactive Mind Map</title>
+  <link rel="icon" href="data:,">
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top left, var(--cp-accent-soft), transparent 32rem),
+        linear-gradient(135deg, var(--cp-bg), var(--cp-bg-elevated));
+      color: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    a {
+      color: var(--cp-link);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .app {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 16px;
+      height: 100vh;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .hero,
+    .panel,
+    .details {
+      background: var(--cp-panel-strong);
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--cp-accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.75rem, 3vw, 3rem);
+      line-height: 1.05;
+    }
+
+    .hero p {
+      max-width: 76rem;
+      margin: 10px 0 0;
+      color: var(--cp-text-muted);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .source {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--cp-accent-soft);
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      color: var(--cp-text);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(260px, 320px) minmax(420px, 1fr) minmax(280px, 360px);
+      gap: 16px;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .panel,
+    .details {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .left {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+    }
+
+    .toolbar {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-bottom: 1px solid var(--cp-border);
+    }
+
+    .search {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      color: var(--cp-text);
+      font: inherit;
+      outline: none;
+    }
+
+    .search:focus {
+      border-color: var(--cp-accent);
+      box-shadow: 0 0 0 3px var(--cp-accent-soft);
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button,
+    .link-button {
+      appearance: none;
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 600;
+      padding: 8px 10px;
+      transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+    }
+
+    button:hover,
+    .link-button:hover {
+      background: var(--cp-surface-soft);
+      border-color: var(--cp-border-strong);
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    .primary {
+      background: var(--cp-accent);
+      border-color: var(--cp-accent);
+      color: var(--cp-accent-fg);
+    }
+
+    .primary:hover {
+      background: var(--cp-accent-hover);
+      border-color: var(--cp-accent-hover);
+    }
+
+    .legend {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border-bottom: 1px solid var(--cp-border);
+      color: var(--cp-text-muted);
+      font-size: 0.88rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      inline-size: 10px;
+      block-size: 10px;
+      border-radius: 50%;
+      background: var(--cp-accent);
+      box-shadow: 0 0 0 3px var(--cp-accent-soft);
+    }
+
+    .dot.sub {
+      background: var(--cp-link);
+    }
+
+    .dot.leaf {
+      background: var(--cp-success);
+    }
+
+    .tree {
+      overflow: auto;
+      padding: 12px;
+    }
+
+    .tree ul {
+      list-style: none;
+      margin: 0;
+      padding: 0 0 0 14px;
+      border-left: 1px solid var(--cp-border);
+    }
+
+    .tree > ul {
+      border-left: 0;
+      padding-left: 0;
+    }
+
+    .tree button {
+      width: 100%;
+      margin: 3px 0;
+      padding: 8px;
+      text-align: left;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tree button.active,
+    .tree button.match {
+      background: var(--cp-highlight);
+      border-color: var(--cp-accent);
+    }
+
+    .count {
+      color: var(--cp-text-muted);
+      font-size: 0.78rem;
+    }
+
+    .map-panel {
+      position: relative;
+      overflow: auto;
+      min-height: 0;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      background:
+        linear-gradient(90deg, var(--cp-sheen), transparent),
+        var(--cp-panel);
+    }
+
+    .map-panel.is-panning {
+      cursor: grabbing;
+    }
+
+    .map-header {
+      position: absolute;
+      z-index: 3;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .map-tip,
+    .stats {
+      padding: 8px 10px;
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-overlay);
+      color: var(--cp-text-muted);
+      font-size: 0.84rem;
+      pointer-events: auto;
+    }
+
+    svg {
+      min-width: 100%;
+      min-height: 620px;
+      display: block;
+    }
+
+    .edge {
+      fill: none;
+      stroke: var(--cp-border-strong);
+      stroke-width: 1.6;
+      opacity: 0.86;
+    }
+
+    .edge.selected {
+      stroke: var(--cp-accent);
+      stroke-width: 2.4;
+    }
+
+    .node-group {
+      cursor: pointer;
+    }
+
+    .map-panel.is-panning .node-group {
+      cursor: grabbing;
+    }
+
+    .node-card {
+      fill: var(--cp-surface);
+      stroke: var(--cp-border);
+      stroke-width: 1;
+      filter: drop-shadow(0 1px 2px var(--cp-border));
+    }
+
+    .node-group:hover .node-card,
+    .node-group.selected .node-card {
+      fill: var(--cp-highlight);
+      stroke: var(--cp-accent);
+      stroke-width: 1.6;
+    }
+
+    .node-root .node-card {
+      fill: var(--cp-accent);
+      stroke: var(--cp-accent);
+    }
+
+    .node-root text {
+      fill: var(--cp-accent-fg);
+    }
+
+    .node-title {
+      fill: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .node-meta {
+      fill: var(--cp-text-muted);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 11px;
+      pointer-events: none;
+    }
+
+    .node-toggle {
+      fill: var(--cp-surface-soft);
+      stroke: var(--cp-border);
+      stroke-width: 1;
+    }
+
+    .details {
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .detail-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--cp-border);
+    }
+
+    .detail-head h2 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border: 1px solid var(--cp-border);
+      border-radius: 999px;
+      background: var(--cp-accent-soft);
+      color: var(--cp-text);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .detail-body {
+      overflow: auto;
+      padding: 16px;
+    }
+
+    .summary {
+      margin: 0 0 16px;
+      color: var(--cp-text-muted);
+      line-height: 1.55;
+    }
+
+    .section-title {
+      margin: 18px 0 8px;
+      color: var(--cp-text);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .feature-list li {
+      padding: 10px;
+      border: 1px solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      line-height: 1.42;
+    }
+
+    .links {
+      display: grid;
+      gap: 8px;
+    }
+
+    .link-button {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      color: var(--cp-text);
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      color: var(--cp-text-soft);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    mark {
+      background: var(--cp-highlight);
+      color: var(--cp-text);
+      border-radius: 0.25rem;
+      padding: 0 2px;
+    }
+
+    @media (max-width: 1180px) {
+      .workspace {
+        grid-template-columns: 280px 1fr;
+      }
+
+      .details {
+        grid-column: 1 / -1;
+        min-height: 360px;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .app {
+        padding: 12px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .map-panel {
+        min-height: 520px;
+      }
+
+      svg {
+        min-height: 520px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Interactive mind map</p>
+        <h1>Microsoft Agent 365</h1>
+        <p>Agent 365 is the control plane for IT and security leaders to observe, secure, and govern agents across the organization. Expand each branch to explore strategy, governance, security, registry, lifecycle, and developer extensibility topics.</p>
+      </div>
+      <a class="source" href="https://learn.microsoft.com/en-us/microsoft-agent-365/" target="_blank" rel="noreferrer">Open Microsoft Learn <span aria-hidden="true">-></span></a>
+    </header>
+
+    <section class="workspace" aria-label="Agent 365 mind map workspace">
+      <aside class="panel left" aria-label="Mind map controls">
+        <div class="toolbar">
+          <input id="search" class="search" type="search" placeholder="Search topics, features, risks..." aria-label="Search mind map">
+          <div class="buttons">
+            <button id="expandAll" class="primary" type="button">Expand all</button>
+            <button id="collapseAll" type="button">Collapse</button>
+            <button id="resetView" type="button">Reset</button>
+          </div>
+        </div>
+        <div class="legend" aria-label="Legend">
+          <div class="legend-item"><span class="dot"></span> Core control-plane capability</div>
+          <div class="legend-item"><span class="dot sub"></span> Feature area or admin surface</div>
+          <div class="legend-item"><span class="dot leaf"></span> Specific capability or risk signal</div>
+        </div>
+        <nav id="tree" class="tree" aria-label="Topic outline"></nav>
+      </aside>
+
+      <section class="panel map-panel" aria-label="Visual mind map">
+        <div class="map-header">
+          <div class="map-tip">Click nodes to expand. Drag the canvas to pan around the map.</div>
+          <div id="stats" class="stats"></div>
+        </div>
+        <svg id="map" role="img" aria-label="Expandable Agent 365 mind map"></svg>
+      </section>
+
+      <aside class="details" aria-label="Selected topic details">
+        <div class="detail-head">
+          <h2 id="detailTitle">Microsoft Agent 365</h2>
+          <div id="detailBadges" class="badge-row"></div>
+        </div>
+        <div class="detail-body">
+          <p id="detailSummary" class="summary"></p>
+          <div id="detailFeatures"></div>
+          <div class="section-title">Documentation links</div>
+          <div id="detailLinks" class="links"></div>
+          <p class="footer-note">Content summarized from public Microsoft Learn documentation pages linked in each topic.</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const docs = {
+      root: "https://learn.microsoft.com/en-us/microsoft-agent-365/",
+      why: "https://learn.microsoft.com/en-us/microsoft-agent-365/leadership/why-agent-365-for-enterprise",
+      innovate: "https://learn.microsoft.com/en-us/microsoft-agent-365/leadership/govern-agents-support-innovation",
+      developer: "https://learn.microsoft.com/en-us/microsoft-agent-365/developer/",
+      sdk: "https://learn.microsoft.com/en-us/microsoft-agent-365/developer/agent-365-sdk",
+      cli: "https://learn.microsoft.com/en-us/microsoft-agent-365/developer/agent-365-cli",
+      otel: "https://learn.microsoft.com/en-us/microsoft-agent-365/developer/direct-open-telemetry-integration",
+      adminOverview: "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-365-overview?toc=/microsoft-agent-365/toc.json&bc=/microsoft-agent-365/breadcrumb/agent365/toc.json",
+      registry: "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-registry?toc=/microsoft-agent-365/toc.json&bc=/microsoft-agent-365/breadcrumb/agent365/toc.json",
+      actions: "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-actions",
+      roles: "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-roles-perms",
+      security: "https://learn.microsoft.com/en-us/security/security-for-ai/agent-365-security?toc=/microsoft-agent-365/toc.json&bc=/microsoft-agent-365/breadcrumb/agent365/toc.json",
+      entra: "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/capabilities-entra",
+      purview: "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/data-security",
+      defenderInventory: "https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-inventory",
+      defenderProtection: "https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-detection-protection",
+      agentId: "https://learn.microsoft.com/en-us/entra/agent-id/identity-platform/what-is-agent-id-platform",
+      agentRegistryConvergence: "https://learn.microsoft.com/en-us/entra/agent-id/identity-platform/agent-registry-convergence",
+      agentGovernance: "https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview",
+      riskyAgents: "https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents",
+      conditionalAccess: "https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id?tabs=custom-security-attributes",
+      secureGateway: "https://learn.microsoft.com/en-us/entra/global-secure-access/concept-secure-web-ai-gateway-agents",
+      promptShield: "https://learn.microsoft.com/en-us/entra/global-secure-access/how-to-ai-prompt-injection-protection",
+      dlp: "https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp",
+      audit: "https://learn.microsoft.com/en-us/purview/audit-search",
+      sensitivityLabels: "https://learn.microsoft.com/en-us/purview/sensitivity-labels",
+      insiderRisk: "https://learn.microsoft.com/en-us/purview/insider-risk-management",
+      ediscovery: "https://learn.microsoft.com/en-us/purview/ediscovery",
+      complianceManager: "https://learn.microsoft.com/en-us/purview/compliance-manager-assessments",
+      lifecycle: "https://learn.microsoft.com/en-us/purview/manage-data-governance",
+      advancedHuntingAgents: "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-aiagentsinfo-table",
+      cloudAppEvents: "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-cloudappevents-table",
+      runtimeProtection: "https://learn.microsoft.com/en-us/defender-endpoint/ai-agent-runtime-protection-overview",
+      workIqTools: "https://learn.microsoft.com/en-us/microsoft-agent-365/tooling-servers-overview",
+      copilotStudioIntegration: "https://learn.microsoft.com/en-us/defender-cloud-apps/ai-agent-inventory",
+      sdkPackages: "https://pypi.org/search/?q=microsoft-agents-a365",
+      samples: "https://learn.microsoft.com/en-us/microsoft-agent-365/developer/samples",
+      getStartedDev: "https://learn.microsoft.com/en-us/microsoft-agent-365/developer/get-started"
+    };
+
+    const data = {
+      id: "agent365",
+      title: "Agent 365",
+      type: "control plane",
+      summary: "A unified Microsoft control plane for observing, securing, governing, and managing AI agents across the enterprise, regardless of where they originate.",
+      tags: ["Observe", "Secure", "Govern", "Lifecycle"],
+      links: [{ label: "Microsoft Agent 365 documentation", url: docs.root }],
+      children: [
+        {
+          id: "why-enterprise",
+          title: "Why enterprises need it",
+          type: "strategy",
+          summary: "Agents access documents, call APIs, send emails, and act on behalf of users. Agent 365 helps organizations move from fragmented experimentation and agent sprawl to trusted AI operations.",
+          tags: ["agent sprawl", "control plane"],
+          links: [{ label: "Why Agent 365 for enterprise", url: docs.why }],
+          features: [
+            "Centralize visibility and control across fragmented agent tools.",
+            "Track nonhuman actors with accountable identities and policies.",
+            "Reduce risk as agents become more autonomous in critical workflows."
+          ],
+          children: [
+            {
+              id: "identity",
+              title: "Identity",
+              type: "foundation",
+              summary: "Agents receive first-class Entra-backed identities with clear accountability, permissions, and policy enforcement.",
+              tags: ["Microsoft Entra", "Agent ID"],
+              links: [{ label: "Microsoft agent identity platform", url: docs.agentId }],
+              features: ["Define what an agent can access, which APIs it can call, and which actions it can take."]
+            },
+            {
+              id: "observability-foundation",
+              title: "Observability",
+              type: "foundation",
+              summary: "Agent interactions become observable so teams can understand activity, system access, data use, and behavior over time.",
+              tags: ["audit", "telemetry"],
+              links: [{ label: "Direct OpenTelemetry integration", url: docs.otel }],
+              features: ["Make agent activity traceable for debugging, auditing, compliance validation, and trust."]
+            },
+            {
+              id: "lifecycle-foundation",
+              title: "Lifecycle management",
+              type: "foundation",
+              summary: "Agents are managed from creation through deployment, versioning, updates, compliance review, and retirement.",
+              tags: ["versions", "retirement"],
+              links: [{ label: "Agent 365 overview", url: docs.adminOverview }],
+              features: ["Track versions, manage updates, and ensure agents remain compliant as requirements evolve."]
+            }
+          ]
+        },
+        {
+          id: "observe",
+          title: "Observe",
+          type: "admin capability",
+          summary: "Gain visibility into agents in your environment, understand usage, and act on performance, behavior, and risk signals before they affect the business.",
+          tags: ["visibility", "registry", "usage"],
+          links: [
+            { label: "Agent registry", url: docs.registry },
+            { label: "Agent overview", url: docs.adminOverview }
+          ],
+          features: [
+            "Discover and review agents across the tenant.",
+            "Understand who published and owns each agent.",
+            "Track adoption, activity, and governance insights."
+          ],
+          children: [
+            {
+              id: "registry",
+              title: "Agent registry",
+              type: "admin surface",
+              summary: "A centralized Microsoft 365 admin center inventory of all agents available in the organization.",
+              tags: ["inventory", "owners", "unmanaged"],
+              links: [{ label: "View and manage the agent registry", url: docs.registry }],
+              features: [
+                "Show total agents, agents without owners, and unmanaged agents.",
+                "Filter by status, publisher type, channel, platform, and data source.",
+                "Refresh, export, add agents, customize views, and manage pinned agents."
+              ],
+              children: [
+                {
+                  id: "agent-types",
+                  title: "Agent types",
+                  type: "taxonomy",
+                  summary: "The registry groups agents by source and publishing model to help administrators decide how to govern them.",
+                  tags: ["Microsoft", "partner", "custom"],
+                  links: [{ label: "Agent registry types", url: docs.registry }],
+                  features: ["Microsoft agents", "External partner-built agents", "Published by your org", "Shared by creator"]
+                },
+                {
+                  id: "ownerless",
+                  title: "Ownerless agents",
+                  type: "governance gap",
+                  summary: "Shared agents can become ownerless when their creator leaves the organization; admins can identify, filter, block, delete, or reassign them.",
+                  tags: ["accountability", "triage"],
+                  links: [{ label: "Agents without owners", url: docs.registry }],
+                  features: ["Ownerless count", "One-click filtering", "Real-time updates after user deletion"]
+                }
+              ]
+            },
+            {
+              id: "overview-dashboard",
+              title: "Agent overview dashboard",
+              type: "admin surface",
+              summary: "The Agents > Overview page in Microsoft 365 admin center gives administrators a tenant-level view of adoption, risk, and governance tasks.",
+              tags: ["dashboard", "30-day insights"],
+              links: [{ label: "View the Agent overview", url: docs.adminOverview }],
+              features: [
+                "Snapshot of agent activity and actionable insights for the last 30 days.",
+                "Critical actions such as approving pending requests and managing agents without owners.",
+                "Total agents, usage trends, active users, and agent run-time."
+              ],
+              children: [
+                {
+                  id: "hero-metrics",
+                  title: "Hero metrics",
+                  type: "dashboard insight",
+                  summary: "High-level indicators show the scale and engagement of the tenant's agent footprint.",
+                  tags: ["registry", "active users", "runtime"],
+                  links: [{ label: "Agent overview summary", url: docs.adminOverview }],
+                  features: [
+                    "Agent registry count summarizes agents available in the organization catalog.",
+                    "Active users show unique users who interacted with agents in the recent reporting window.",
+                    "Agent run-time aggregates hours worked by agents across tool calls and response preparation."
+                  ]
+                },
+                {
+                  id: "admin-actions",
+                  title: "Critical admin actions",
+                  type: "dashboard workflow",
+                  summary: "The overview surfaces actions administrators should prioritize to close governance gaps.",
+                  tags: ["pending approvals", "ownerless agents"],
+                  links: [{ label: "Agent overview", url: docs.adminOverview }],
+                  features: [
+                    "Review and approve pending agent requests.",
+                    "Manage agents without owners before accountability gaps become risk.",
+                    "Use dashboard insights as direct pathways into registry and governance workflows."
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: "govern",
+          title: "Govern",
+          type: "admin capability",
+          summary: "Establish guardrails for agents and people, onboard agents with IT oversight, govern access to resources and data, and stay audit ready.",
+          tags: ["guardrails", "policy", "audit"],
+          links: [
+            { label: "Govern without slowing innovation", url: docs.innovate },
+            { label: "Agent governance overview", url: docs.adminOverview }
+          ],
+          features: [
+            "Start with an agent registry so agents are visible.",
+            "Assign clear ownership and accountability.",
+            "Enable basic observability before layering deeper policies."
+          ],
+          children: [
+            {
+              id: "ownership",
+              title: "Ownership and accountability",
+              type: "governance control",
+              summary: "Agent 365 binds agents to responsible people or teams with purpose, permissions, and scope of action.",
+              tags: ["sponsor", "purpose", "scope"],
+              links: [{ label: "Govern agents and support innovation", url: docs.innovate }],
+              features: [
+                "Clarify responsibility for behavior, data access, and lifecycle.",
+                "Reduce ambiguity across agents built on different platforms."
+              ]
+            },
+            {
+              id: "policy-templates",
+              title: "Policy templates",
+              type: "governance control",
+              summary: "IT teams can apply governance and compliance templates during onboarding so agents inherit consistent controls from the start.",
+              tags: ["least privilege", "templates"],
+              links: [{ label: "Agent 365 overview", url: docs.adminOverview }],
+              features: [
+                "Bring agents under control through one IT-controlled flow.",
+                "Control what agents can access and do.",
+                "Automate ongoing governance with rules-based management."
+              ]
+            },
+            {
+              id: "audit-ready",
+              title: "Audit readiness",
+              type: "compliance outcome",
+              summary: "Built-in visibility, auditing, retention, and compliance details help organizations understand how agents are used and performing.",
+              tags: ["retention", "compliance"],
+              links: [{ label: "Agent governance overview", url: docs.adminOverview }],
+              features: [
+                "Track whether agents operate securely and comply with policies.",
+                "Retain and investigate interactions that create compliance or safety risk."
+              ]
+            }
+          ]
+        },
+        {
+          id: "secure",
+          title: "Secure",
+          type: "security capability",
+          summary: "Secure agent identities, control resource access, prevent oversharing and data leaks, and defend against threats with Microsoft Entra, Purview, and Defender.",
+          tags: ["Entra", "Purview", "Defender"],
+          links: [{ label: "How Agent 365 secures AI agents", url: docs.security }],
+          features: [
+            "Distributed security model with centralized visibility.",
+            "Purpose-built controls for agent identities, data, and threat protection.",
+            "Security insights and recommendations surface in the products teams already use."
+          ],
+          children: [
+            {
+              id: "entra-security",
+              title: "Access control with Entra",
+              type: "security pillar",
+              summary: "Microsoft Entra provides visibility into agent identities and helps enforce least-privilege access.",
+              tags: ["conditional access", "least privilege"],
+              links: [
+                { label: "Protect agent identities with Entra", url: docs.entra },
+                { label: "Conditional Access for Agent ID", url: docs.conditionalAccess }
+              ],
+              features: [
+                "View agents with Entra Agent ID, registered agents, and shadow agents.",
+                "Extend conditional access and identity protection policies to agents.",
+                "Use SASE to monitor and block malicious or non-compliant network traffic."
+              ],
+              children: [
+                {
+                  id: "entra-agent-id",
+                  title: "Entra Agent ID",
+                  type: "identity foundation",
+                  summary: "Microsoft Entra Agent ID gives AI agents first-class identities for authentication, authorization, lifecycle governance, and policy enforcement.",
+                  tags: ["identity plane", "authentication"],
+                  links: [
+                    { label: "Entra Agent ID capabilities", url: docs.entra },
+                    { label: "Agent identity platform", url: docs.agentId }
+                  ],
+                  features: [
+                    "Assign discovered agents a dedicated Entra-backed identity.",
+                    "Support application-only and delegated access scenarios.",
+                    "Integrate with APIs and SDKs for consistent enterprise identity."
+                  ]
+                },
+                {
+                  id: "agent-sponsorship",
+                  title: "Agent sponsorship",
+                  type: "identity governance",
+                  summary: "Agent governance assigns responsible sponsors or owners so agent access and lifecycle decisions have accountable humans or teams.",
+                  tags: ["sponsor", "owner", "lifecycle"],
+                  links: [{ label: "Entra ID governance for agents", url: docs.agentGovernance }],
+                  features: [
+                    "Provide oversight for agent behavior, permissions, and lifecycle.",
+                    "Use lifecycle workflows so access does not persist longer than needed.",
+                    "Support reassignment and review when agent ownership changes."
+                  ]
+                },
+                {
+                  id: "conditional-access-agent",
+                  title: "Conditional Access for agents",
+                  type: "access policy",
+                  summary: "Conditional Access policies can target agent identities, resources, risk, and context to enforce real-time access decisions.",
+                  tags: ["Zero Trust", "risk-based access"],
+                  links: [{ label: "Conditional Access for Agent ID", url: docs.conditionalAccess }],
+                  features: [
+                    "Apply least-privilege access controls to agent identities.",
+                    "Trigger policies based on agent context, risk, and resource sensitivity.",
+                    "Align agent access with existing Zero Trust practices."
+                  ]
+                },
+                {
+                  id: "risky-agent-detection",
+                  title: "Risky agent detection",
+                  type: "identity protection",
+                  summary: "Microsoft Entra ID Protection can identify risky agent identity behavior such as unfamiliar resource access or high sign-in attempt volume.",
+                  tags: ["risk", "identity protection"],
+                  links: [{ label: "Microsoft Entra ID protection for agents", url: docs.riskyAgents }],
+                  features: [
+                    "Detect unusual identity behavior involving agent accounts.",
+                    "Use risk signals to automate policy responses.",
+                    "Reduce exposure from compromised or misused agent identities."
+                  ]
+                },
+                {
+                  id: "secure-ai-gateway",
+                  title: "Secure Web and AI Gateway",
+                  type: "network control",
+                  summary: "Network-level controls can monitor and filter agent traffic, including capabilities for Copilot Studio agents.",
+                  tags: ["SASE", "traffic filtering"],
+                  links: [{ label: "Secure Web and AI Gateway for agents", url: docs.secureGateway }],
+                  features: [
+                    "Apply web content filtering, threat intelligence filtering, and network file filtering.",
+                    "Monitor and block malicious or non-compliant traffic.",
+                    "Extend access protections beyond identity into network behavior."
+                  ]
+                }
+              ]
+            },
+            {
+              id: "purview-security",
+              title: "Data security with Purview",
+              type: "security pillar",
+              summary: "Microsoft Purview governs what data agents can access and how they use it while supporting compliance obligations across the lifecycle.",
+              tags: ["DLP", "labels", "eDiscovery"],
+              links: [
+                { label: "Data security in Agent 365", url: docs.purview },
+                { label: "Learn about data loss prevention", url: docs.dlp }
+              ],
+              features: [
+                "Data security posture management and interaction visibility.",
+                "Sensitivity labels, DLP, auditing, lifecycle management, and eDiscovery.",
+                "Insider risk management, communication compliance, and Compliance Manager assessments."
+              ],
+              children: [
+                {
+                  id: "dspm-ai-observability",
+                  title: "DSPM and AI observability",
+                  type: "data posture",
+                  summary: "Purview Data Security Posture Management helps organizations discover AI usage, view active agent instances, understand risks, and prioritize remediation.",
+                  tags: ["DSPM", "AI observability"],
+                  links: [{ label: "Data security in Agent 365", url: docs.purview }],
+                  features: [
+                    "Use AI observability as a front door for visibility into active agent instances.",
+                    "Apply recommendations and one-click policies to reduce data exposure.",
+                    "Understand AI-related data security risks across the enterprise."
+                  ]
+                },
+                {
+                  id: "audit-agent-interactions",
+                  title: "Audit agent interactions",
+                  type: "compliance evidence",
+                  summary: "Agent 365 activities can be audited like user activity, including human-to-agent, agent-to-human, agent-to-tool, and agent-to-agent interactions.",
+                  tags: ["audit log", "forensics"],
+                  links: [
+                    { label: "Purview audit search", url: docs.audit },
+                    { label: "Data security in Agent 365", url: docs.purview }
+                  ],
+                  features: [
+                    "Capture prompts, responses, accessed files, and sensitivity label references in audit records.",
+                    "Search Agent 365 activities in Purview Audit.",
+                    "Support investigations, forensics, and compliance obligations."
+                  ]
+                },
+                {
+                  id: "sensitivity-labels-agents",
+                  title: "Sensitivity labels for agents",
+                  type: "information protection",
+                  summary: "Agents honor existing access protections and sensitivity labels, but encrypted content requires the agent instance to have the right usage rights.",
+                  tags: ["labels", "encryption", "EXTRACT"],
+                  links: [
+                    { label: "Sensitivity labels", url: docs.sensitivityLabels },
+                    { label: "Agent 365 data security", url: docs.purview }
+                  ],
+                  features: [
+                    "Files must be explicitly shared with agent instances for access.",
+                    "Encrypted labels must grant VIEW and EXTRACT usage rights to the agent instance.",
+                    "New content created by Agent 365 does not automatically inherit source-item labels."
+                  ]
+                },
+                {
+                  id: "dlp-agent-policies",
+                  title: "DLP for agent workflows",
+                  type: "data loss prevention",
+                  summary: "DLP policies can include agent instances or groups of agent instances to audit or block sensitive data flows.",
+                  tags: ["DLP", "Teams", "SharePoint"],
+                  links: [
+                    { label: "Data loss prevention", url: docs.dlp },
+                    { label: "Agent 365 data security", url: docs.purview }
+                  ],
+                  features: [
+                    "Specify agent instances in DLP policy as you would users.",
+                    "Support block or audit for agent-to-human and human-to-agent interactions.",
+                    "Monitor policy impact because agents may not understand downstream DLP block actions."
+                  ]
+                },
+                {
+                  id: "ediscovery-retention",
+                  title: "eDiscovery and retention",
+                  type: "legal hold",
+                  summary: "Purview eDiscovery and data lifecycle management help preserve, search, export, retain, and delete agent-related content when required.",
+                  tags: ["eDiscovery", "retention"],
+                  links: [
+                    { label: "eDiscovery", url: docs.ediscovery },
+                    { label: "Data lifecycle management", url: docs.lifecycle }
+                  ],
+                  features: [
+                    "Support legal, regulatory, and internal investigations involving agent interactions.",
+                    "Apply retention and deletion policies to agent-generated content.",
+                    "Use Purview tools to manage evidence across Microsoft 365 workloads."
+                  ]
+                },
+                {
+                  id: "insider-comms-compliance",
+                  title: "Insider risk and communications",
+                  type: "behavioral compliance",
+                  summary: "Purview Insider Risk Management and Communication Compliance help detect risky AI usage and policy violations in agent communications.",
+                  tags: ["insider risk", "communication compliance"],
+                  links: [
+                    { label: "Insider risk management", url: docs.insiderRisk },
+                    { label: "Compliance Manager assessments", url: docs.complianceManager }
+                  ],
+                  features: [
+                    "Use risky AI usage templates to detect prompt injection and protected material access.",
+                    "Detect unethical communication in Teams and email interactions.",
+                    "Track AI regulatory readiness with Compliance Manager assessments."
+                  ]
+                }
+              ]
+            },
+            {
+              id: "defender-security",
+              title: "Threat protection with Defender",
+              type: "security pillar",
+              summary: "Microsoft Defender helps identify misconfigurations, detect suspicious activity, block malicious tool invocations, and support threat hunting.",
+              tags: ["posture", "alerts", "runtime defense"],
+              links: [
+                { label: "AI agent inventory in Defender XDR", url: docs.defenderInventory },
+                { label: "AI agent detection and protection", url: docs.defenderProtection }
+              ],
+              features: [
+                "Agent security posture management and exposure visualization.",
+                "Threat detection and real-time blocking.",
+                "Unified observability logs for investigation and hunting."
+              ],
+              children: [
+                {
+                  id: "defender-ai-assets",
+                  title: "AI Assets inventory",
+                  type: "security inventory",
+                  summary: "The Defender AI Assets page provides an agent inventory across Microsoft agent platforms, supported non-Microsoft cloud platforms, and local agents discovered on endpoints.",
+                  tags: ["AI Assets", "inventory"],
+                  links: [{ label: "AI agent inventory in Defender", url: docs.defenderInventory }],
+                  features: [
+                    "Browse cloud-based agents and local agents from the Defender portal.",
+                    "Filter by agent name, platform, publish status, model, version, or creation time.",
+                    "Open detailed agent panes with tools, channels, MCP servers, alerts, and configuration."
+                  ]
+                },
+                {
+                  id: "agentsinfo-hunting",
+                  title: "AgentsInfo hunting",
+                  type: "KQL investigation",
+                  summary: "Advanced Hunting tables expose agent inventory and configuration snapshots so security teams can query posture and risk.",
+                  tags: ["KQL", "AgentsInfo"],
+                  links: [
+                    { label: "AI agents advanced hunting table", url: docs.advancedHuntingAgents },
+                    { label: "Defender AI agent inventory", url: docs.defenderInventory }
+                  ],
+                  features: [
+                    "Use arg_max(Timestamp, *) to query the latest state for each agent.",
+                    "Assess authentication, access control, tools, knowledge sources, and orchestration settings.",
+                    "Use prebuilt AI Agents queries or custom KQL."
+                  ]
+                },
+                {
+                  id: "real-time-protection",
+                  title: "Real-time protection",
+                  type: "runtime defense",
+                  summary: "Microsoft Defender can evaluate supported agent-initiated tool invocations before they execute and block unsafe actions in real time.",
+                  tags: ["RTP", "Work IQ MCP", "blocking"],
+                  links: [
+                    { label: "AI agent detection and protection", url: docs.defenderProtection },
+                    { label: "Work IQ MCP tooling", url: docs.workIqTools }
+                  ],
+                  features: [
+                    "Block system instruction extraction, sensitive data leaks, internal tool misuse, and malicious destinations.",
+                    "Generate Defender alerts that explain what was blocked and which agent, user, and tool were involved.",
+                    "Scope depends on supported Work IQ MCP tools, with separate model prompt/response evaluation for Copilot Studio."
+                  ]
+                },
+                {
+                  id: "local-runtime-protection",
+                  title: "Local agent runtime protection",
+                  type: "endpoint defense",
+                  summary: "Runtime protection extends inspection to supported local AI agents running on endpoints where agents can read files, invoke tools, and call services.",
+                  tags: ["endpoint", "local agents"],
+                  links: [{ label: "AI agent runtime protection", url: docs.runtimeProtection }],
+                  features: [
+                    "Inspect user prompts, pre-tool calls, and post-tool responses through supported hooks.",
+                    "Audit or block risky activity before it continues.",
+                    "Protect workstation-level agent loops that interact with local files and services."
+                  ]
+                },
+                {
+                  id: "near-real-time-detections",
+                  title: "Near-real-time detections",
+                  type: "SOC alerting",
+                  summary: "Defender monitors agent telemetry, tool usage, and execution patterns to generate alerts for suspicious or malicious behavior.",
+                  tags: ["alerts", "incidents"],
+                  links: [{ label: "Detect AI agent threats", url: docs.defenderProtection }],
+                  features: [
+                    "Detect persistent jailbreak attempts, suspicious user activity, and suspicious agent execution.",
+                    "Correlate alerts into incidents using familiar Defender workflows.",
+                    "Use Agent 365 observability data as detection context."
+                  ]
+                },
+                {
+                  id: "blast-radius-hunting",
+                  title: "Blast radius investigation",
+                  type: "incident response",
+                  summary: "Advanced Hunting can correlate Agent 365 observability with alerts and entities to investigate root cause and scope.",
+                  tags: ["CloudAppEvents", "AlertEvidence"],
+                  links: [
+                    { label: "CloudAppEvents table", url: docs.cloudAppEvents },
+                    { label: "AI agent detection and protection", url: docs.defenderProtection }
+                  ],
+                  features: [
+                    "Trace tool invocations and correlate them with alerts or block events.",
+                    "Identify anomalous execution patterns across environments.",
+                    "Build custom detection rules based on agent activity signals."
+                  ]
+                }
+              ]
+            },
+            {
+              id: "risk-signals",
+              title: "Risk signals",
+              type: "risk model",
+              summary: "Agent 365 aggregates high-severity risks across Microsoft Entra, Purview, Defender, and the Microsoft 365 admin center.",
+              tags: ["critical", "high", "medium"],
+              links: [{ label: "Agents at risk", url: docs.registry }],
+              features: [
+                "Shadow agent, no owner assigned, and excessive permissions.",
+                "Security misconfiguration, prompt injection, sensitive data access, and conditional access violation.",
+                "Pending approval, operational exceptions, and compliance or retention gaps."
+              ],
+              children: [
+                {
+                  id: "prompt-injection",
+                  title: "Prompt injection",
+                  type: "threat signal",
+                  summary: "Prompt injection is a high-severity risk where an agent is manipulated into misusing authorized tools or data.",
+                  tags: ["AI Prompt Shield"],
+                  links: [{ label: "Prompt injection protection", url: docs.promptShield }],
+                  features: ["AI Prompt Shield can flag or block injection attempts at runtime."]
+                },
+                {
+                  id: "sensitive-data",
+                  title: "Sensitive data access",
+                  type: "data risk",
+                  summary: "Sensitive data access risk appears when labeled data is accessed without a matching DLP policy exception.",
+                  tags: ["DLP", "labels"],
+                  links: [{ label: "Data loss prevention", url: docs.dlp }],
+                  features: ["Use labels and DLP policies to reduce oversharing and leakage."]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: "developer",
+          title: "Developer extensibility",
+          type: "developer path",
+          summary: "Use the Agent 365 SDK and CLI to extend agents built with any SDK, platform, or cloud into enterprise-ready Agent 365-compatible agents.",
+          tags: ["SDK", "CLI", "blueprints"],
+          links: [
+            { label: "Agent 365 developer documentation", url: docs.developer },
+            { label: "Agent 365 SDK", url: docs.sdk },
+            { label: "Agent 365 CLI", url: docs.cli }
+          ],
+          features: [
+            "Works with low-code platforms such as Copilot Studio and Azure AI Foundry.",
+            "Works with pro-code frameworks such as Microsoft Agent Framework, Agents SDK, OpenAI Agents SDK, Claude Code SDK, and LangChain.",
+            "Works with agent code hosted on Azure, AWS, GCP, or other endpoints."
+          ],
+          children: [
+            {
+              id: "sdk",
+              title: "Agent 365 SDK",
+              type: "developer tool",
+              summary: "The SDK enhances existing agents with enterprise-grade identity, observability, notifications, security, and governed Microsoft 365 data access.",
+              tags: ["identity", "OTel", "MCP"],
+              links: [{ label: "Learn about the Agent 365 SDK", url: docs.sdk }],
+              features: [
+                "Use Entra-backed Agent Identity and agent-owned resources such as mailbox.",
+                "Receive and respond to notifications from Teams, Outlook, Word comments, and email.",
+                "Invoke governed MCP servers for Mail, Calendar, SharePoint, Teams, and other workloads."
+              ],
+              children: [
+                {
+                  id: "sdk-runtime",
+                  title: "SDK runtime utilities",
+                  type: "SDK component",
+                  summary: "The Agent 365 SDK runtime package provides environment management, Power Platform API discovery, and authentication scope resolution.",
+                  tags: ["runtime", "auth scopes"],
+                  links: [
+                    { label: "Agent 365 SDK", url: docs.sdk },
+                    { label: "SDK package index", url: docs.sdkPackages }
+                  ],
+                  features: [
+                    "Resolve environment configuration needed by Agent 365-enabled apps.",
+                    "Support authentication scope discovery for agent workloads.",
+                    "Provide core utilities used by higher-level SDK capabilities."
+                  ]
+                },
+                {
+                  id: "sdk-notifications",
+                  title: "Notifications and messaging",
+                  type: "SDK component",
+                  summary: "Notification extensions help agents receive, route, and respond to activity across Microsoft 365 applications and subchannels.",
+                  tags: ["Teams", "Outlook", "Word"],
+                  links: [{ label: "Agent 365 SDK", url: docs.sdk }],
+                  features: [
+                    "Handle lifecycle events and notification routing.",
+                    "Support agent participation in Teams, Outlook, Word comments, and email.",
+                    "Make agents behave more like accountable Microsoft 365 participants."
+                  ]
+                },
+                {
+                  id: "sdk-observability-packages",
+                  title: "Observability packages",
+                  type: "SDK component",
+                  summary: "SDK observability packages provide OpenTelemetry spans for invocation, tool execution, LLM inference, and framework-specific instrumentation.",
+                  tags: ["OpenTelemetry", "traces"],
+                  links: [
+                    { label: "Agent 365 SDK", url: docs.sdk },
+                    { label: "Direct OTel integration", url: docs.otel }
+                  ],
+                  features: [
+                    "Instrument Microsoft Agent Framework, OpenAI Agents SDK, LangChain, and Semantic Kernel apps.",
+                    "Use context propagation and pluggable exporters.",
+                    "Create consistent traces, metrics, and logs across agent workflows."
+                  ]
+                },
+                {
+                  id: "sdk-mcp-tooling",
+                  title: "MCP tooling extensions",
+                  type: "SDK component",
+                  summary: "Tooling packages discover, register, and manage MCP tool servers for agents across supported frameworks and platforms.",
+                  tags: ["MCP", "Work IQ tools"],
+                  links: [
+                    { label: "Agent 365 SDK", url: docs.sdk },
+                    { label: "Work IQ MCP tooling", url: docs.workIqTools }
+                  ],
+                  features: [
+                    "Register MCP servers dynamically for Agent Framework, OpenAI Agents SDK, Semantic Kernel, and Azure AI Foundry agents.",
+                    "Enable governed access to Microsoft 365 workloads under admin control.",
+                    "Connect agent logic to enterprise-approved tools."
+                  ]
+                },
+                {
+                  id: "developer-quickstarts",
+                  title: "Quickstarts and samples",
+                  type: "developer path",
+                  summary: "Agent 365 developer docs include guided setup and hands-on samples to build working agents in supported languages.",
+                  tags: ["Node.js", "Python", ".NET"],
+                  links: [
+                    { label: "Agent 365 samples", url: docs.samples },
+                    { label: "Get started with Agent 365 development", url: docs.getStartedDev }
+                  ],
+                  features: [
+                    "Use AI-guided setup for installation, configuration, deployment, and publishing.",
+                    "Pick a Node.js, Python, or .NET quickstart.",
+                    "Understand agent types, phases, setup, and publishing before implementation."
+                  ]
+                }
+              ]
+            },
+            {
+              id: "cli",
+              title: "Agent 365 CLI",
+              type: "developer tool",
+              summary: "The CLI automates setup, identity, configuration, MCP integration, publishing, and Azure deployment across the development lifecycle.",
+              tags: ["automation", "deployment"],
+              links: [{ label: "Learn about the Agent 365 CLI", url: docs.cli }],
+              features: [
+                "Create agent blueprints and supporting resources.",
+                "Manage Work IQ tools, permissions, and tooling for agents.",
+                "Deploy agent code to Azure and publish packages to Microsoft admin center."
+              ]
+            },
+            {
+              id: "blueprint",
+              title: "Agent blueprint",
+              type: "governed template",
+              summary: "An IT-approved definition of an agent type that acts as the enterprise template for compliant agent instances.",
+              tags: ["template", "policy inheritance"],
+              links: [{ label: "Agent 365 developer overview", url: docs.developer }],
+              features: [
+                "Defines capabilities, Work IQ tool access, security constraints, audit requirements, and lifecycle metadata.",
+                "Allows each agent instance to inherit compliance, governance, and security policies."
+              ]
+            },
+            {
+              id: "otel",
+              title: "OpenTelemetry observability",
+              type: "developer capability",
+              summary: "The SDK structures telemetry with OpenTelemetry conventions, producing consistent traces, metrics, and logs across agent workflows.",
+              tags: ["traces", "metrics", "logs"],
+              links: [{ label: "Direct OTel integration", url: docs.otel }],
+              features: [
+                "Connect observability data to existing monitoring and security tools.",
+                "Maintain a unified enterprise-grade view of agent activity."
+              ]
+            }
+          ]
+        },
+        {
+          id: "lifecycle",
+          title: "Lifecycle and operations",
+          type: "operating model",
+          summary: "Agent 365 supports the full operating model from onboarding and approval to access control, ongoing governance, incident response, updates, and retirement.",
+          tags: ["onboard", "operate", "retire"],
+          links: [
+            { label: "Agent 365 overview", url: docs.adminOverview },
+            { label: "Agent registry actions", url: docs.registry }
+          ],
+          features: [
+            "Onboard and approve agents through IT-controlled flows.",
+            "Control availability, access, channels, and pinned experiences.",
+            "Detect low-value, risky, unmanaged, or ownerless agents before they create risk or cost."
+          ],
+          children: [
+            {
+              id: "onboard",
+              title: "Onboard and approve",
+              type: "lifecycle phase",
+              summary: "Admins can review, approve, publish, and apply governance decisions consistently across channels and platforms.",
+              tags: ["approval", "publishing"],
+              links: [{ label: "Agent governance overview", url: docs.adminOverview }],
+              features: ["Apply policy templates and least-privilege access from the start."]
+            },
+            {
+              id: "operate",
+              title: "Operate and monitor",
+              type: "lifecycle phase",
+              summary: "Monitor adoption, usage, owner gaps, risk posture, operational exceptions, and governance health.",
+              tags: ["monitoring", "insights"],
+              links: [{ label: "Agent overview dashboard", url: docs.adminOverview }],
+              features: ["Use actionable insights to review pending requests and manage ownerless agents."]
+            },
+            {
+              id: "respond-retire",
+              title: "Respond and retire",
+              type: "lifecycle phase",
+              summary: "When agents become risky, ownerless, unmanaged, or obsolete, administrators can investigate, block, delete, reassign, or retire them.",
+              tags: ["response", "retirement"],
+              links: [
+                { label: "Agent registry actions", url: docs.registry },
+                { label: "Agent actions", url: docs.actions }
+              ],
+              features: ["Review risk counts, use security portal links, and take mitigation actions when needed."]
+            },
+            {
+              id: "readiness-checklist",
+              title: "Readiness checklist",
+              type: "operational readiness",
+              summary: "Before scaling Agent 365, organizations should confirm licensing, roles, admin access, registry coverage, observability, and security integrations.",
+              tags: ["prerequisites", "roles", "licenses"],
+              links: [
+                { label: "Agent management prerequisites", url: docs.adminOverview },
+                { label: "Agent roles and permissions", url: docs.roles }
+              ],
+              features: [
+                "Confirm Microsoft 365, Microsoft 365 Copilot, or Microsoft Agent 365 licensing.",
+                "Assign administrators roles that can manage agent settings and governance workflows.",
+                "Enable relevant Defender, Purview, and Entra capabilities before broad rollout."
+              ]
+            },
+            {
+              id: "rollout-model",
+              title: "Rollout model",
+              type: "adoption pattern",
+              summary: "A practical rollout starts with visibility, then ownership, basic observability, policy templates, and security/compliance enforcement.",
+              tags: ["crawl-walk-run", "adoption"],
+              links: [{ label: "Govern without slowing innovation", url: docs.innovate }],
+              features: [
+                "Start with agent registry and agent identity to reduce unknown inventory.",
+                "Assign ownership and purpose before expanding permissions or channels.",
+                "Layer Purview, Entra, and Defender policies as agent criticality grows."
+              ]
+            },
+            {
+              id: "review-cadence",
+              title: "Review cadence",
+              type: "operating rhythm",
+              summary: "Regular reviews keep agent inventory, owners, permissions, risk signals, and policy coverage current as agents evolve.",
+              tags: ["access reviews", "governance rhythm"],
+              links: [
+                { label: "Agent registry", url: docs.registry },
+                { label: "Entra agent governance", url: docs.agentGovernance }
+              ],
+              features: [
+                "Review ownerless and unmanaged agents on a regular cadence.",
+                "Audit excessive permissions, sensitive data access, and operational exceptions.",
+                "Retire or reassign agents whose business purpose, owner, or risk posture changed."
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const defaultCollapsedIds = [
+      "overview-dashboard",
+      "entra-security",
+      "purview-security",
+      "defender-security",
+      "sdk",
+      "lifecycle",
+      "identity",
+      "observability-foundation",
+      "lifecycle-foundation",
+      "agent-types",
+      "ownerless",
+      "prompt-injection",
+      "sensitive-data"
+    ];
+    const collapsed = new Set(defaultCollapsedIds);
+    let selectedId = "agent365";
+    let currentQuery = "";
+    let shouldCenterMap = true;
+    const nodeById = new Map();
+
+    function indexTree(node, parent = null, depth = 0) {
+      node.parent = parent;
+      node.depth = depth;
+      nodeById.set(node.id, node);
+      (node.children || []).forEach(child => indexTree(child, node, depth + 1));
+    }
+    indexTree(data);
+
+    function allNodes(node = data, list = []) {
+      list.push(node);
+      (node.children || []).forEach(child => allNodes(child, list));
+      return list;
+    }
+
+    function visibleNodes(node = data, list = []) {
+      list.push(node);
+      if (!collapsed.has(node.id)) {
+        (node.children || []).forEach(child => visibleNodes(child, list));
+      }
+      return list;
+    }
+
+    function visibleLinks(node = data, links = []) {
+      if (!collapsed.has(node.id)) {
+        (node.children || []).forEach(child => {
+          links.push({ source: node, target: child });
+          visibleLinks(child, links);
+        });
+      }
+      return links;
+    }
+
+    function isMatch(node) {
+      if (!currentQuery) return false;
+      const haystack = [
+        node.title,
+        node.type,
+        node.summary,
+        ...(node.tags || []),
+        ...(node.features || [])
+      ].join(" ").toLowerCase();
+      return haystack.includes(currentQuery.toLowerCase());
+    }
+
+    function countDescendants(node) {
+      return (node.children || []).reduce((sum, child) => sum + 1 + countDescendants(child), 0);
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function highlight(text) {
+      const safe = escapeHtml(text);
+      if (!currentQuery) return safe;
+      const escapedQuery = currentQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return safe.replace(new RegExp(`(${escapedQuery})`, "ig"), "<mark>$1</mark>");
+    }
+
+    function selectNode(id, toggle = false) {
+      const node = nodeById.get(id);
+      if (!node) return;
+      const panel = document.querySelector(".map-panel");
+      const anchor = panel && toggle ? {
+        id,
+        left: panel.querySelector(`.node-group[data-node-id="${id}"]`)?.getBoundingClientRect().left,
+        top: panel.querySelector(`.node-group[data-node-id="${id}"]`)?.getBoundingClientRect().top,
+        scrollLeft: panel.scrollLeft,
+        scrollTop: panel.scrollTop
+      } : null;
+      selectedId = id;
+      if (toggle && node.children && node.children.length) {
+        collapsed.has(id) ? collapsed.delete(id) : collapsed.add(id);
+      }
+      render();
+      if (anchor && Number.isFinite(anchor.left) && Number.isFinite(anchor.top)) {
+        const updated = panel.querySelector(`.node-group[data-node-id="${id}"]`);
+        if (updated) {
+          const next = updated.getBoundingClientRect();
+          panel.scrollLeft += next.left - anchor.left;
+          panel.scrollTop += next.top - anchor.top;
+        } else {
+          panel.scrollLeft = anchor.scrollLeft;
+          panel.scrollTop = anchor.scrollTop;
+        }
+      }
+    }
+
+    function expandAncestors(node) {
+      let parent = node.parent;
+      while (parent) {
+        collapsed.delete(parent.id);
+        parent = parent.parent;
+      }
+    }
+
+    function nodeSize(node) {
+      return {
+        width: node.id === data.id ? 174 : 154,
+        height: node.id === data.id ? 70 : 62
+      };
+    }
+
+    function layout(nodes, width, height) {
+      const rowGap = 94;
+      const columnGap = 218;
+      const marginX = 44;
+      const marginTop = Math.max(220, height * 0.45);
+      const marginBottom = Math.max(220, height * 0.45);
+      const state = { nextY: marginTop };
+
+      function place(node) {
+        const visibleChildren = collapsed.has(node.id) ? [] : (node.children || []);
+        if (!visibleChildren.length) {
+          node.y = state.nextY;
+          state.nextY += rowGap;
+          return node.y;
+        }
+
+        const childYs = visibleChildren.map(place);
+        node.y = (childYs[0] + childYs[childYs.length - 1]) / 2;
+        return node.y;
+      }
+
+      place(data);
+      nodes.forEach(node => {
+        const size = nodeSize(node);
+        node.x = marginX + size.width / 2 + node.depth * columnGap;
+      });
+
+      const maxDepth = Math.max(...nodes.map(node => node.depth), 0);
+      const widestAtMaxDepth = nodes
+        .filter(node => node.depth === maxDepth)
+        .reduce((max, node) => Math.max(max, nodeSize(node).width), 154);
+
+      return {
+        width: Math.max(width, marginX * 2 + 174 + maxDepth * columnGap + widestAtMaxDepth),
+        height: Math.max(height, state.nextY + marginBottom)
+      };
+    }
+
+    function centerMapOn(node) {
+      const panel = document.querySelector(".map-panel");
+      if (!panel || !node) return;
+      panel.scrollLeft = Math.max(0, node.x - panel.clientWidth / 2);
+      panel.scrollTop = Math.max(0, node.y - panel.clientHeight / 2);
+    }
+
+    function wrapText(text, maxChars) {
+      const words = text.split(" ");
+      const lines = [];
+      let line = "";
+      for (const word of words) {
+        const next = line ? `${line} ${word}` : word;
+        if (next.length > maxChars && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = next;
+        }
+      }
+      if (line) lines.push(line);
+      return lines.slice(0, 2);
+    }
+
+    function renderSvg() {
+      const svg = document.getElementById("map");
+      const rect = svg.getBoundingClientRect();
+      svg.innerHTML = "";
+
+      const nodes = visibleNodes();
+      const links = visibleLinks();
+      const baseWidth = Math.max(rect.width, 360);
+      const baseHeight = Math.max(rect.height, 620);
+      const canvas = layout(nodes, baseWidth, baseHeight);
+      svg.setAttribute("viewBox", `0 0 ${canvas.width} ${canvas.height}`);
+      svg.style.width = `${canvas.width}px`;
+      svg.style.height = `${canvas.height}px`;
+
+      const linkLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      const nodeLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      svg.append(linkLayer, nodeLayer);
+
+      links.forEach(link => {
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const sourceSize = nodeSize(link.source);
+        const targetSize = nodeSize(link.target);
+        const sx = link.source.x + sourceSize.width / 2;
+        const sy = link.source.y;
+        const tx = link.target.x - targetSize.width / 2;
+        const ty = link.target.y;
+        const curve = Math.max(52, (tx - sx) / 2);
+        path.setAttribute("d", `M ${sx} ${sy} C ${sx + curve} ${sy}, ${tx - curve} ${ty}, ${tx} ${ty}`);
+        path.setAttribute("class", `edge ${selectedId === link.target.id || selectedId === link.source.id ? "selected" : ""}`);
+        linkLayer.appendChild(path);
+      });
+
+      nodes.forEach(node => {
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        const isRoot = node.id === data.id;
+        const { width: cardWidth, height: cardHeight } = nodeSize(node);
+        group.setAttribute("class", `node-group ${isRoot ? "node-root" : ""} ${selectedId === node.id ? "selected" : ""}`);
+        group.setAttribute("transform", `translate(${node.x - cardWidth / 2}, ${node.y - cardHeight / 2})`);
+        group.setAttribute("role", "button");
+        group.setAttribute("tabindex", "0");
+        group.setAttribute("aria-label", node.title);
+        group.dataset.nodeId = node.id;
+        group.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            selectNode(node.id, true);
+          }
+        });
+
+        const card = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        card.setAttribute("class", "node-card");
+        card.setAttribute("width", cardWidth);
+        card.setAttribute("height", cardHeight);
+        card.setAttribute("rx", "10");
+        group.appendChild(card);
+
+        wrapText(node.title, isRoot ? 18 : 16).forEach((line, index) => {
+          const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          text.setAttribute("class", "node-title");
+          text.setAttribute("x", 12);
+          text.setAttribute("y", 22 + index * 15);
+          text.textContent = line;
+          group.appendChild(text);
+        });
+
+        const meta = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        meta.setAttribute("class", "node-meta");
+        meta.setAttribute("x", 12);
+        meta.setAttribute("y", cardHeight - 12);
+        meta.textContent = node.type;
+        group.appendChild(meta);
+
+        if (node.children && node.children.length) {
+          const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          circle.setAttribute("class", "node-toggle");
+          circle.setAttribute("cx", cardWidth - 16);
+          circle.setAttribute("cy", 16);
+          circle.setAttribute("r", 10);
+          group.appendChild(circle);
+
+          const toggle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          toggle.setAttribute("class", "node-meta");
+          toggle.setAttribute("x", cardWidth - 20);
+          toggle.setAttribute("y", 20);
+          toggle.textContent = collapsed.has(node.id) ? "+" : "-";
+          group.appendChild(toggle);
+        }
+
+        nodeLayer.appendChild(group);
+      });
+
+      if (shouldCenterMap) {
+        centerMapOn(nodeById.get(selectedId) || data);
+        shouldCenterMap = false;
+      }
+    }
+
+    function renderTree() {
+      const tree = document.getElementById("tree");
+      function item(node) {
+        const hasChildren = node.children && node.children.length;
+        const button = `
+          <button type="button" class="${selectedId === node.id ? "active" : ""} ${isMatch(node) ? "match" : ""}" data-id="${node.id}">
+            <span>${highlight(node.title)}</span>
+            <span class="count">${hasChildren ? (collapsed.has(node.id) ? "+" : "-") + " " + node.children.length : ""}</span>
+          </button>`;
+        const children = hasChildren && !collapsed.has(node.id)
+          ? `<ul>${node.children.map(item).join("")}</ul>`
+          : "";
+        return `<li>${button}${children}</li>`;
+      }
+      tree.innerHTML = `<ul>${item(data)}</ul>`;
+      tree.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", () => selectNode(button.dataset.id, true));
+      });
+    }
+
+    function renderDetails() {
+      const node = nodeById.get(selectedId) || data;
+      document.getElementById("detailTitle").innerHTML = highlight(node.title);
+      document.getElementById("detailSummary").innerHTML = highlight(node.summary);
+      document.getElementById("detailBadges").innerHTML = [
+        node.type,
+        ...(node.tags || [])
+      ].map(tag => `<span class="badge">${escapeHtml(tag)}</span>`).join("");
+
+      const featureWrap = document.getElementById("detailFeatures");
+      const features = node.features || [];
+      featureWrap.innerHTML = features.length
+        ? `<div class="section-title">Key features</div><ul class="feature-list">${features.map(feature => `<li>${highlight(feature)}</li>`).join("")}</ul>`
+        : "";
+
+      const links = node.links || [];
+      document.getElementById("detailLinks").innerHTML = links.length
+        ? links.map(link => `<a class="link-button" href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer"><span>${escapeHtml(link.label)}</span><span aria-hidden="true">-></span></a>`).join("")
+        : `<span class="summary">Select a child topic for a specific Microsoft Learn link.</span>`;
+    }
+
+    function renderStats() {
+      const total = allNodes().length;
+      const visible = visibleNodes().length;
+      const matches = currentQuery ? allNodes().filter(isMatch).length : 0;
+      document.getElementById("stats").textContent = currentQuery
+        ? `${matches} matches | ${visible} of ${total} topics visible`
+        : `${visible} of ${total} topics visible`;
+    }
+
+    function render() {
+      renderTree();
+      renderSvg();
+      renderDetails();
+      renderStats();
+    }
+
+    document.getElementById("expandAll").addEventListener("click", () => {
+      collapsed.clear();
+      shouldCenterMap = true;
+      render();
+    });
+
+    document.getElementById("collapseAll").addEventListener("click", () => {
+      allNodes().forEach(node => {
+        if (node.id !== data.id && node.children && node.children.length) collapsed.add(node.id);
+      });
+      shouldCenterMap = true;
+      render();
+    });
+
+    document.getElementById("resetView").addEventListener("click", () => {
+      collapsed.clear();
+      defaultCollapsedIds.forEach(id => collapsed.add(id));
+      currentQuery = "";
+      selectedId = "agent365";
+      shouldCenterMap = true;
+      document.getElementById("search").value = "";
+      render();
+    });
+
+    document.getElementById("search").addEventListener("input", event => {
+      currentQuery = event.target.value.trim();
+      if (currentQuery) {
+        allNodes().filter(isMatch).forEach(expandAncestors);
+        shouldCenterMap = true;
+      }
+      render();
+    });
+
+    function enableMapPanning() {
+      const panel = document.querySelector(".map-panel");
+      let isPointerDown = false;
+      let didDrag = false;
+      let pendingNodeId = null;
+      let startX = 0;
+      let startY = 0;
+      let startScrollLeft = 0;
+      let startScrollTop = 0;
+
+      panel.addEventListener("pointerdown", event => {
+        if (event.button !== 0 || !event.target.closest("svg")) return;
+        isPointerDown = true;
+        didDrag = false;
+        pendingNodeId = event.target.closest(".node-group")?.getAttribute("aria-label") || null;
+        startX = event.clientX;
+        startY = event.clientY;
+        startScrollLeft = panel.scrollLeft;
+        startScrollTop = panel.scrollTop;
+        panel.classList.add("is-panning");
+      });
+
+      panel.addEventListener("pointermove", event => {
+        if (!isPointerDown) return;
+        const deltaX = event.clientX - startX;
+        const deltaY = event.clientY - startY;
+        if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) didDrag = true;
+        panel.scrollLeft = startScrollLeft - deltaX;
+        panel.scrollTop = startScrollTop - deltaY;
+      });
+
+      function endPan(event) {
+        if (!isPointerDown) return;
+        isPointerDown = false;
+        panel.classList.remove("is-panning");
+        if (!didDrag && pendingNodeId) {
+          const node = allNodes().find(item => item.title === pendingNodeId);
+          if (node) selectNode(node.id, true);
+        }
+        pendingNodeId = null;
+      }
+
+      panel.addEventListener("pointerup", endPan);
+      panel.addEventListener("pointercancel", endPan);
+      panel.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+      }, true);
+    }
+
+    window.addEventListener("resize", renderSvg);
+    enableMapPanning();
+    render();
+  </script>
+</body>
+</html>
